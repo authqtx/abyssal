@@ -8,6 +8,34 @@ import Music from "@/svg/Music";
 import Arrow from "@/svg/Arrow";
 import Play from "@/svg/Play";
 import MusicCard from "@/components/MusicCard";
+import ArtistCard from "@/components/ArtistCard";
+
+const artistData = [
+  {
+    imageUrl:
+      "https://i.scdn.co/image/ab67616100005174214f3cf1cbe7139c1e26ffbb",
+    name: "The Weeknd",
+    role: "Artist",
+  },
+  {
+    imageUrl:
+      "https://i.scdn.co/image/ab6761610000517458b784db7235ec6e30b874af",
+    name: "Odetari",
+    role: "Artist",
+  },
+  {
+    imageUrl:
+      "https://i.scdn.co/image/ab67616100005174ba025c8f62612b2ca6bfa375",
+    name: "Hatsune Miku",
+    role: "Artist",
+  },
+  {
+    imageUrl:
+      "https://i.scdn.co/image/ab67616100005174172e8da719488cb0da105cfd",
+    name: "Deco*27",
+    role: "Artist",
+  },
+];
 
 const musicData = [
   {
@@ -92,10 +120,14 @@ const Page: React.FC = () => {
     <div className="flex flex-col sm:flex-row h-screen">
       {isVisible && (
         <div
-          className={`flex ${isMobile ? "flex-row" : "flex-col"} transition-all duration-300 ease-in-out`}
+          className={`flex ${
+            isMobile ? "flex-row" : "flex-col"
+          } transition-all duration-300 ease-in-out`}
         >
           <div
-            className={`${isMobile ? "w-1/2" : "w-[18rem]"} sticky top-3 mx-2 mt-3 bg-[#171717] rounded-lg p-2 transition-all duration-300 ease-in-out`}
+            className={`${
+              isMobile ? "w-1/2" : "w-[18rem]"
+            } sticky top-3 mx-2 mt-3 bg-[#171717] rounded-lg p-2 transition-all duration-300 ease-in-out`}
           >
             <IconLink href="/" Icon={Home} label="Home" />
             <IconLink
@@ -106,33 +138,35 @@ const Page: React.FC = () => {
             />
           </div>
           <div
-            className={`${isMobile ? "w-1/2" : "w-[18rem]"} mx-2 mt-3 bg-[#171717] rounded-lg p-2 transition-all duration-300 ease-in-out`}
+            className={`${
+              isMobile ? "w-1/2" : "w-[18rem]"
+            } mx-2 mt-3 bg-[#171717] rounded-lg p-2 transition-all duration-300 ease-in-out`}
             style={{ height: isMobile ? "auto" : `${calculatedHeight}rem` }}
           >
             <IconLink href="/library" Icon={Music} label="Library" />
-            <div className="bg-[#252525] mt-5  h-32 rounded-md w-full">
+            <div className="bg-[#252525] mt-5 h-32 rounded-md w-full">
               <h6 className="p-2 text-white font-semibold">
                 Create your first playlist
               </h6>
               <h6 className="pl-2 -mt-1 text-neutral-400 font-normal text-sm">
                 It's easy, we'll help you
               </h6>
-              <div className="w-36 hover:w-40   transition-all h-10 m-2 mt-4 bg-white rounded-full">
-                <h6 className="flex items-center font-semibold text-base justify-center pt-[0.50rem] ">
+              <div className="w-36 hover:w-40 transition-all h-10 m-2 mt-4 bg-white rounded-full">
+                <h6 className="flex items-center font-semibold text-base justify-center pt-[0.50rem]">
                   Create playlist
                 </h6>
               </div>
             </div>
 
-            <div className="bg-[#252525] mt-5  h-32 rounded-md w-full">
+            <div className="bg-[#252525] mt-5 h-32 rounded-md w-full">
               <h6 className="p-2 text-white font-semibold">
                 Let's find some podcasts to follow
               </h6>
               <h6 className="pl-2 -mt-1 text-neutral-400 font-normal text-sm">
                 We'll keep you updated on new episodes
               </h6>
-              <div className="w-36 hover:w-40  transition-all h-10 m-2 mt-4 bg-white rounded-full">
-                <h6 className="flex items-center font-semibold text-base justify-center pt-[0.50rem] ">
+              <div className="w-36 hover:w-40 transition-all h-10 m-2 mt-4 bg-white rounded-full">
+                <h6 className="flex items-center font-semibold text-base justify-center pt-[0.50rem]">
                   Browse podcasts
                 </h6>
               </div>
@@ -141,14 +175,20 @@ const Page: React.FC = () => {
         </div>
       )}
       <div
-        className={`flex-1 ${!isVisible ? "w-full h-full" : "ml-1"} bg-[#171717] p-4 sm:mt-3 mt-0 sm:rounded-lg rounded-none overflow-y-auto relative transition-all duration-300 ease-in-out`}
-        style={{
-          backgroundImage:
-            "linear-gradient(to bottom, rgba(6, 93, 69, 0.8), rgba(23, 23, 23, 0))",
-          backgroundSize: "100% 200px",
-          backgroundRepeat: "no-repeat",
-        }}
+        className={`flex-1 ${
+          !isVisible ? "w-full h-full" : "ml-1"
+        } bg-[#171717] p-4 sm:mt-3 mt-0 sm:rounded-lg rounded-none overflow-y-auto relative transition-all duration-300 ease-in-out`}
       >
+        {/* Fixed Gradient */}
+        <div
+          className="absolute inset-x-0 top-0 h-[200px]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to bottom, rgba(6, 93, 69, 0.8), rgba(23, 23, 23, 0))",
+            pointerEvents: "none",
+          }}
+        />
+
         {/* ARROW ICONS */}
         <div className="absolute left-3 top-4 md:top-8 opacity-0 sm:opacity-100 transition-opacity duration-300">
           <Arrow mirror={true} />
@@ -170,7 +210,7 @@ const Page: React.FC = () => {
           Welcome back
         </h6>
 
-        <div className="absolute left-3 sm:left-[1.8rem] top-[9rem] bg-white w-[calc(100%-1.5rem)] sm:w-[17rem] rounded-md bg-opacity-5 hover:cursor-pointer hover:bg-opacity-10 transition-all group">
+        <div className="absolute left-3 sm:left-[1.8rem] top-[10rem] sm:top-[9rem] bg-white w-[calc(100%-1.5rem)] sm:w-[17rem] rounded-md bg-opacity-5 hover:cursor-pointer hover:bg-opacity-10 transition-all group">
           <img className="size-[4rem] rounded-l-md" src="/media/liked.webp" />
           <div className="absolute right-2 top-[0.80rem] hidden group-hover:block">
             <Play />
@@ -181,15 +221,27 @@ const Page: React.FC = () => {
         </div>
 
         {/*Newest songs */}
-        <h6 className="absolute left-3 sm:left-[1.8rem] top-[16rem] font-semibold text-white text-xl md:text-2xl">
+        <h6 className="absolute left-8 sm:left-[1.8rem] top-[23rem] sm:top-[19rem] font-semibold text-white text-xl md:text-2xl">
           Newest songs
         </h6>
 
         {/* Songs Grid */}
-        <div className="mt-[20rem] grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div className="mt-[24rem] sm:mt-[20rem] grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {musicData.map((item, index) => (
             <MusicCard key={index} {...item} />
           ))}
+        </div>
+
+        {/*Artist*/}
+        <div className="relative">
+          <h6 className="absolute left-5 sm:left-[1rem] -mt-[2rem] font-semibold text-white text-xl md:text-2xl z-10">
+            Discover artists
+          </h6>
+          <div className="mt-[5rem] sm:mt-[7rem] grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {artistData.map((item, index) => (
+              <ArtistCard key={index} {...item} />
+            ))}
+          </div>
         </div>
 
         {/* Search Popup */}
