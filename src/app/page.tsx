@@ -10,15 +10,36 @@ import Play from "@/svg/Play";
 import MusicCard from "@/components/MusicCard";
 
 const musicData = [
-  { imageUrl: "/media/liked.webp", title: "Album One", artist: "Artist One" },
-  { imageUrl: "/media/liked.webp", title: "Album Two", artist: "Artist Two" },
   {
-    imageUrl: "/media/liked.webp",
-    title: "Album Three",
-    artist: "Artist Three",
+    imageUrl:
+      "https://i.scdn.co/image/ab67616d00001e02e06c1525c488705c512884bd",
+    title: "Keep up",
+    artist: "Odetari",
   },
-  { imageUrl: "/media/liked.webp", title: "Album Four", artist: "Artist Four" },
-  { imageUrl: "/media/liked.webp", title: "Album Five", artist: "Artist Five" },
+  {
+    imageUrl:
+      "https://i.scdn.co/image/ab67616d0000b273b0dd6a5cd1dec96c4119c262",
+    title: "One Of The Girls (with JENNIE, Lily Rose Depp)",
+    artist: "The Weeknd, JENNIE, Lily-Rose Depp",
+  },
+  {
+    imageUrl:
+      "https://i.scdn.co/image/ab67616d0000b273786b6e14d94db2177fe8f9df",
+    title: "Army Dreamers",
+    artist: "Kate bush",
+  },
+  {
+    imageUrl:
+      "https://i.scdn.co/image/ab67616d0000b2734f3bb9b3c7f2a5d2c7534716",
+    title: "不可思議のカルテ 桜島麻衣 Ver.",
+    artist: "Mai Sakurajima(CV:Asami Seto)",
+  },
+  {
+    imageUrl:
+      "https://i.scdn.co/image/ab67616d0000b273183b7a8494d8947e07343ad2",
+    title: "ラビットホール",
+    artist: "DECO*27",
+  },
 ];
 
 const Page: React.FC = () => {
@@ -89,6 +110,33 @@ const Page: React.FC = () => {
             style={{ height: isMobile ? "auto" : `${calculatedHeight}rem` }}
           >
             <IconLink href="/library" Icon={Music} label="Library" />
+            <div className="bg-[#252525] mt-5  h-32 rounded-md w-full">
+              <h6 className="p-2 text-white font-semibold">
+                Create your first playlist
+              </h6>
+              <h6 className="pl-2 -mt-1 text-neutral-400 font-normal text-sm">
+                It's easy, we'll help you
+              </h6>
+              <div className="w-36 hover:w-40   transition-all h-10 m-2 mt-4 bg-white rounded-full">
+                <h6 className="flex items-center font-semibold text-base justify-center pt-[0.50rem] ">
+                  Create playlist
+                </h6>
+              </div>
+            </div>
+
+            <div className="bg-[#252525] mt-5  h-32 rounded-md w-full">
+              <h6 className="p-2 text-white font-semibold">
+                Let's find some podcasts to follow
+              </h6>
+              <h6 className="pl-2 -mt-1 text-neutral-400 font-normal text-sm">
+                We'll keep you updated on new episodes
+              </h6>
+              <div className="w-36 hover:w-40  transition-all h-10 m-2 mt-4 bg-white rounded-full">
+                <h6 className="flex items-center font-semibold text-base justify-center pt-[0.50rem] ">
+                  Browse podcasts
+                </h6>
+              </div>
+            </div>
           </div>
         </div>
       )}
