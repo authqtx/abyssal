@@ -10,7 +10,7 @@ interface IconLinkProps {
   href: string;
   Icon: React.FC<{ size: number; color: string; stroke: string }>;
   label: string;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void; // Updated type
 }
 
 const IconLink: React.FC<IconLinkProps> = ({ href, Icon, label, onClick }) => (
@@ -82,10 +82,13 @@ const Sidebar: React.FC = () => {
     return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
-  const handleSearchClick = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsSearchOpen(true);
-  }, []);
+  const handleSearchClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      e.preventDefault();
+      setIsSearchOpen(true);
+    },
+    [],
+  );
 
   const handleSearchSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
