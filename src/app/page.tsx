@@ -2,12 +2,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 import IconLink from "@/components/IconLink";
 import SearchPopup from "@/components/SearchPopup";
-import MusicCard from "@/components/MusicCard";
 import Home from "@/svg/Home";
 import Search from "@/svg/Search";
 import Music from "@/svg/Music";
 import Arrow from "@/svg/Arrow";
 import Play from "@/svg/Play";
+import MusicCard from "@/components/MusicCard";
 
 const musicData = [
   { imageUrl: "/media/liked.webp", title: "Album One", artist: "Artist One" },
@@ -28,7 +28,6 @@ const Page: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<any>(null);
   const [isMobile, setIsMobile] = useState<boolean>(false);
-  const [isLoaded, setIsLoaded] = useState<boolean>(false); // To control when to reveal the sidebar
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -39,9 +38,7 @@ const Page: React.FC = () => {
       setCalculatedHeight(newHeight);
       setIsVisible(screenWidth >= 640);
       setIsMobile(screenWidth < 640);
-      setIsLoaded(true); // Set loaded to true when calculation is complete
     };
-
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
     return () => window.removeEventListener("resize", updateDimensions);
@@ -72,27 +69,29 @@ const Page: React.FC = () => {
 
   return (
     <div className="flex flex-col sm:flex-row h-screen">
-      <div
-        className={`flex ${isMobile ? "flex-row" : "flex-col"} transition-all duration-300 ease-in-out ${isLoaded ? "opacity-100" : "opacity-0"}`}
-      >
+      {isVisible && (
         <div
-          className={`${isMobile ? "w-1/2" : "w-[18rem]"} sticky top-3 mx-2 mt-3 bg-[#171717] rounded-lg p-2 transition-all duration-300 ease-in-out`}
+          className={`flex ${isMobile ? "flex-row" : "flex-col"} transition-all duration-300 ease-in-out`}
         >
-          <IconLink href="/" Icon={Home} label="Home" />
-          <IconLink
-            href="/search"
-            Icon={Search}
-            label="Search"
-            onClick={handleSearchClick}
-          />
+          <div
+            className={`${isMobile ? "w-1/2" : "w-[18rem]"} sticky top-3 mx-2 mt-3 bg-[#171717] rounded-lg p-2 transition-all duration-300 ease-in-out`}
+          >
+            <IconLink href="/" Icon={Home} label="Home" />
+            <IconLink
+              href="/search"
+              Icon={Search}
+              label="Search"
+              onClick={handleSearchClick}
+            />
+          </div>
+          <div
+            className={`${isMobile ? "w-1/2" : "w-[18rem]"} mx-2 mt-3 bg-[#171717] rounded-lg p-2 transition-all duration-300 ease-in-out`}
+            style={{ height: isMobile ? "auto" : `${calculatedHeight}rem` }}
+          >
+            <IconLink href="/library" Icon={Music} label="Library" />
+          </div>
         </div>
-        <div
-          className={`${isMobile ? "w-1/2" : "w-[18rem]"} mx-2 mt-3 bg-[#171717] rounded-lg p-2 transition-all duration-300 ease-in-out`}
-          style={{ height: isMobile ? "auto" : `${calculatedHeight}rem` }}
-        >
-          <IconLink href="/library" Icon={Music} label="Library" />
-        </div>
-      </div>
+      )}
       <div
         className={`flex-1 ${!isVisible ? "w-full h-full" : "ml-1"} bg-[#171717] p-4 sm:mt-3 mt-0 sm:rounded-lg rounded-none overflow-y-auto relative transition-all duration-300 ease-in-out`}
         style={{
