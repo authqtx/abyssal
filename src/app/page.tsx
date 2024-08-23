@@ -1,5 +1,6 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import IconLink from "@/components/IconLink";
 import SearchPopup from "@/components/SearchPopup";
 import Home from "@/svg/Home";
@@ -9,6 +10,7 @@ import Arrow from "@/svg/Arrow";
 import Play from "@/svg/Play";
 import MusicCard from "@/components/MusicCard";
 import ArtistCard from "@/components/ArtistCard";
+import AuthPopup from "@/components/AuthPopup"; // Import the AuthPopup component
 
 const artistData = [
   {
@@ -69,7 +71,6 @@ const musicData = [
     artist: "DECO*27",
   },
 ];
-
 const Page: React.FC = () => {
   const [calculatedHeight, setCalculatedHeight] = useState<number>(0);
   const [isVisible, setIsVisible] = useState<boolean>(true);
@@ -77,6 +78,12 @@ const Page: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<any>(null);
   const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isAuthPopupVisible, setIsAuthPopupVisible] = useState<boolean>(false);
+  const [authPopupType, setAuthPopupType] = useState<"login" | "signup" | null>(
+    null,
+  );
+
+  const authPopupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -92,6 +99,24 @@ const Page: React.FC = () => {
     window.addEventListener("resize", updateDimensions);
     return () => window.removeEventListener("resize", updateDimensions);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        authPopupRef.current &&
+        !authPopupRef.current.contains(event.target as Node)
+      ) {
+        setIsAuthPopupVisible(false);
+        setAuthPopupType(null);
+      }
+    };
+
+    if (isAuthPopupVisible) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [isAuthPopupVisible]);
 
   const handleSearchClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -115,6 +140,11 @@ const Page: React.FC = () => {
     },
     [searchQuery],
   );
+
+  const handleAuthClick = (type: "login" | "signup") => {
+    setAuthPopupType(type);
+    setIsAuthPopupVisible(true);
+  };
 
   return (
     <div className="flex flex-col sm:flex-row h-screen">
@@ -197,10 +227,16 @@ const Page: React.FC = () => {
 
         {/* LOGIN/ SIGNUP SECTION */}
         <div className="absolute right-0 md:top-10 top-4 grid grid-flow-col md:gap-10 gap-2 md:mr-10 mr-2">
-          <div className="flex items-center justify-center cursor-pointer hover:rounded-full hover:bg-[#252525] p-2 rounded w-[6rem] h-10 transition-all duration-300 ease-in-out">
+          <div
+            className="flex items-center justify-center cursor-pointer hover:rounded-full hover:bg-[#252525] p-2 rounded w-[6rem] h-10 transition-all duration-300 ease-in-out"
+            onClick={() => handleAuthClick("signup")}
+          >
             <h6 className="text-neutral-300 font-semibold">Sign up</h6>
           </div>
-          <div className="flex items-center justify-center cursor-pointer hover:bg-[#F8F8F8] p-2 rounded transition-all duration-300 ease-in-out h-10 w-[6rem] bg-white rounded-full">
+          <div
+            className="flex items-center justify-center cursor-pointer hover:bg-[#F8F8F8] p-2 rounded transition-all duration-300 ease-in-out h-10 w-[6rem] bg-white rounded-full"
+            onClick={() => handleAuthClick("login")}
+          >
             <h6 className="text-black font-semibold">Log in</h6>
           </div>
         </div>
@@ -226,12 +262,13 @@ const Page: React.FC = () => {
         </h6>
 
         {/* Songs Grid */}
-        <div className="mt-[24rem] sm:mt-[20rem] grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {musicData.map((item, index) => (
-            <MusicCard key={index} {...item} />
+        <div className="mt-[24rem] sm:mt-[20rem] grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
+          {musicData.map((music, index) => (
+            <MusicCard key={index} {...music} />
           ))}
         </div>
 
+        {/* Artists Grid */}
         {/*Artist*/}
         <div className="relative">
           <h6 className="absolute left-5 sm:left-[1rem] -mt-[2rem] font-semibold text-white text-xl md:text-2xl z-10">
@@ -243,16 +280,20 @@ const Page: React.FC = () => {
             ))}
           </div>
         </div>
-
-        {/* Search Popup */}
-        <SearchPopup
-          isSearchOpen={isSearchOpen}
-          onClose={() => setIsSearchOpen(false)}
-          onSubmit={handleSearchSubmit}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-        />
       </div>
+
+      {/* AuthPopup */}
+      {isAuthPopupVisible && (
+        <div
+          ref={authPopupRef}
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+        >
+          <AuthPopup
+            type={authPopupType}
+            onClose={() => setIsAuthPopupVisible(false)}
+          />
+        </div>
+      )}
     </div>
   );
 };
