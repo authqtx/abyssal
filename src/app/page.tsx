@@ -71,7 +71,13 @@ const musicData = [
     artist: "DECO*27",
   },
 ];
-const Page: React.FC = () => {
+
+interface AuthPopupProps {
+  type: "login" | "signup" | null;
+  onClose: () => void;
+}
+
+const Page: React.FC = (Type, onClose) => {
   const [calculatedHeight, setCalculatedHeight] = useState<number>(0);
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
@@ -289,11 +295,22 @@ const Page: React.FC = () => {
           className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
         >
           <AuthPopup
-            type={authPopupType}
+            initialType={authPopupType || "login"} // default to "login" if authPopupType is null
             onClose={() => setIsAuthPopupVisible(false)}
           />
         </div>
       )}
+
+      <SearchPopup
+        isSearchOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onSubmit={handleSearchSubmit}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        handleKeyDown={(e) => {
+          if (e.key === "Enter") handleSearchSubmit(e as any);
+        }}
+      />
     </div>
   );
 };
