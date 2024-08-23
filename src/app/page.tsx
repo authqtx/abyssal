@@ -6,11 +6,14 @@ import SearchPopup from "@/components/SearchPopup";
 import Home from "@/svg/Home";
 import Search from "@/svg/Search";
 import Music from "@/svg/Music";
+import { supabase } from "@/utils/supabase/client";
+import LoadingIndicator from "@/components/LoadingIndicator";
 import Arrow from "@/svg/Arrow";
 import Play from "@/svg/Play";
 import MusicCard from "@/components/MusicCard";
 import ArtistCard from "@/components/ArtistCard";
 import AuthPopup from "@/components/AuthPopup"; // Import the AuthPopup component
+import UserProfile from "@/components/UserProfile";
 
 const artistData = [
   {
@@ -72,12 +75,7 @@ const musicData = [
   },
 ];
 
-interface AuthPopupProps {
-  type: "login" | "signup" | null;
-  onClose: () => void;
-}
-
-const Page: React.FC = (Type, onClose) => {
+const Page: React.FC = () => {
   const [calculatedHeight, setCalculatedHeight] = useState<number>(0);
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
@@ -88,6 +86,42 @@ const Page: React.FC = (Type, onClose) => {
   const [authPopupType, setAuthPopupType] = useState<"login" | "signup" | null>(
     null,
   );
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [userpfp, setuserpfp] = useState("/media/default-avatar.png");
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  useEffect(() => {
+    const storedUserpfp = localStorage.getItem("user_pfp"); // Ensure you use a string key
+    if (storedUserpfp) {
+      setuserpfp(storedUserpfp);
+    }
+
+    const checkUserSession = async () => {
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
+
+      if (error) {
+        console.error("Error fetching session:", error.message);
+        return;
+      }
+
+      setIsLoggedIn(!!session?.user);
+    };
+
+    checkUserSession();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session?.user);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const authPopupRef = useRef<HTMLDivElement>(null);
 
@@ -100,10 +134,19 @@ const Page: React.FC = (Type, onClose) => {
       setCalculatedHeight(newHeight);
       setIsVisible(screenWidth >= 640);
       setIsMobile(screenWidth < 640);
+      setIsLoading(false);
     };
-    updateDimensions();
+
+    // Set a timeout to ensure the loading indicator shows for at least a brief moment
+    const timer = setTimeout(() => {
+      updateDimensions();
+    }, 500);
+
     window.addEventListener("resize", updateDimensions);
-    return () => window.removeEventListener("resize", updateDimensions);
+    return () => {
+      window.removeEventListener("resize", updateDimensions);
+      clearTimeout(timer);
+    };
   }, []);
 
   useEffect(() => {
@@ -151,6 +194,10 @@ const Page: React.FC = (Type, onClose) => {
     setAuthPopupType(type);
     setIsAuthPopupVisible(true);
   };
+
+  if (isLoading) {
+    return <LoadingIndicator />;
+  }
 
   return (
     <div className="flex flex-col sm:flex-row h-screen">
@@ -231,21 +278,26 @@ const Page: React.FC = (Type, onClose) => {
           <Arrow />
         </div>
 
-        {/* LOGIN/ SIGNUP SECTION */}
-        <div className="absolute right-0 md:top-10 top-4 grid grid-flow-col md:gap-10 gap-2 md:mr-10 mr-2">
-          <div
-            className="flex items-center justify-center cursor-pointer hover:rounded-full hover:bg-[#252525] p-2 rounded w-[6rem] h-10 transition-all duration-300 ease-in-out"
-            onClick={() => handleAuthClick("signup")}
-          >
-            <h6 className="text-neutral-300 font-semibold">Sign up</h6>
+        {!isLoggedIn ? (
+          <div className="absolute right-0 md:top-10 top-4 grid grid-flow-col md:gap-10 gap-2 md:mr-10 mr-2">
+            <div
+              className="flex items-center justify-center cursor-pointer hover:rounded-full hover:bg-[#252525] p-2 rounded w-[6rem] h-10 transition-all duration-300 ease-in-out"
+              onClick={() => handleAuthClick("signup")}
+            >
+              <h6 className="text-neutral-300 font-semibold">Sign up</h6>
+            </div>
+            <div
+              className="flex items-center justify-center bg-white cursor-pointer rounded-full hover:bg-opacity-50 p-2 w-[6rem] h-10 transition-all duration-300 ease-in-out"
+              onClick={() => handleAuthClick("login")}
+            >
+              <h6 className="text-black font-semibold">Log in</h6>
+            </div>
           </div>
-          <div
-            className="flex items-center justify-center cursor-pointer hover:bg-[#F8F8F8] p-2 rounded transition-all duration-300 ease-in-out h-10 w-[6rem] bg-white rounded-full"
-            onClick={() => handleAuthClick("login")}
-          >
-            <h6 className="text-black font-semibold">Log in</h6>
-          </div>
-        </div>
+        ) : (
+          <>
+            <UserProfile src={userpfp} />
+          </>
+        )}
 
         {/*WELCOME MESSAGE */}
         <h6 className="absolute left-3 sm:left-[1.8rem] top-[6rem] font-semibold text-white text-2xl md:text-3xl">

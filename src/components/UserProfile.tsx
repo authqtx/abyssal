@@ -1,20 +1,22 @@
-"use client";
-
-import { useSession } from "next-auth/react";
+import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-const UserProfile = () => {
-  const { data: session } = useSession();
+interface UserProfileProps {
+  src?: string; // URL for the avatar image
+  fallbackText?: string; // Text to show if the image fails to load
+  className?: string; // Additional classes for styling
+}
 
-  if (!session || !session.user) {
-    return <div>No user data</div>;
-  }
-
+const UserProfile: React.FC<UserProfileProps> = ({
+  src = "/media/default-avatar.png",
+  fallbackText = "Auth",
+  className = "",
+}) => {
   return (
-    <div className="absolute right-5 top-5">
+    <div className={`absolute right-5 top-5 ${className}`}>
       <Avatar>
-        <AvatarImage src={session.user.image || "/default-avatar.png"} />
-        <AvatarFallback>{session.user.name?.charAt(0) || "?"}</AvatarFallback>
+        <AvatarImage src={src} />
+        <AvatarFallback>{fallbackText}</AvatarFallback>
       </Avatar>
     </div>
   );
